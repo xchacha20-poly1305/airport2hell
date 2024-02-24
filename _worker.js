@@ -3,8 +3,8 @@ export function onRequest(context) {
 }
 
 async function handleRequest(context) {
-  // const url = new URL(request.url)
-  const path = context.functionPath
+  const url = new URL(context.request.url)
+  const path = url.pathname.toString()
 
   if (isNaN(parseInt(path.slice(1)))) {
     switch (path) {
