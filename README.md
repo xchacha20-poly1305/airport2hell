@@ -4,7 +4,7 @@ Airport2hell 是一款让您机场的劫持失效的工具。
 
 # 部署
 
-复制 [worker.js](./worker.js) 到 Cloudflare Woreker 中。
+复制 [_worker.js](./_worker.js) 到 Cloudflare Woreker 中。
 
 # 用法
 
