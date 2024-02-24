@@ -1,6 +1,6 @@
 # airport2hell
 
-Airport2hell 是一款让您机场的劫持扔去地狱的工具。
+Airport2hell 是一款将贵机场的虚假宣传送入地狱的工具。
 
 <https://airport2hell.pages.dev>
 
