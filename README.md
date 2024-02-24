@@ -1,10 +1,18 @@
 # airport2hell
 
-Airport2hell 是一款让您机场的劫持失效的工具。
+Airport2hell 是一款让您机场的劫持扔去地狱的工具。
+
+<https://airport2hell.pages.dev>
 
 # 部署
 
-复制 [_worker.js](./_worker.js) 到 Cloudflare Woreker 中。
+## Workers
+
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/xchacha20-poly1305/airport2hell)
+
+## Pages
+
+点击 “Use this template” 后连接到 Cloudflare。
 
 # 用法
 
