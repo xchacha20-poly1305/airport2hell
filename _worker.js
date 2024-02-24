@@ -1,22 +1,24 @@
-addEventListener('fetch', event => {
-  event.respondWith(handleRequest(event.request))
-})
+export function onRequest(context) {
+  return handleRequest(context)
+}
 
-async function handleRequest(request) {
-  const url = new URL(request.url)
-  const path = url.pathname
+async function handleRequest(context) {
+  // const url = new URL(request.url)
+  const path = context.functionPath
 
   if (isNaN(parseInt(path.slice(1)))) {
-    if (path === '/ip') {
-      const ip = request.headers.get('cf-connecting-ip')
-      if (ip) {
-        return new Response(ip, { status: 200 })
-      } else {
-        return new Response('IP not available', { status: 404 })
-      }
-    } else {
-      return new Response('Invalid path', { status: 400 })
+    switch (path) {
+      case "/ip":
+        const ip = request.headers.get('cf-connecting-ip')
+        if (ip) {
+          return new Response(ip, { status: 200 })
+        } else {
+          return new Response('IP not available', { status: 404 })
+        }
+      default:
+        return new Response('Invalid path', { status: 400 })
     }
+
   } else {
     const value = parseInt(path.slice(1))
     if (value <= 128) {
