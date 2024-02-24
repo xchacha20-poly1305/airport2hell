@@ -1,8 +1,4 @@
 export function onRequest(context) {
-  return handleRequest(context)
-}
-
-async function handleRequest(context) {
   const url = new URL(context.request.url)
   const path = url.pathname.toString()
 
