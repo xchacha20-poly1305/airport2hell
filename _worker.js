@@ -5,6 +5,8 @@ export default {
 
     if (isNaN(parseInt(path.substring(1)))) {
       switch (path) {
+        case "/":
+          return Response.redirect('https://github.com/xchacha20-poly1305/airport2hell', 302)
         case "/ip":
           const ip = request.headers.get('cf-connecting-ip')
           if (ip) {
