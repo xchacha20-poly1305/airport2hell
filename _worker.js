@@ -15,7 +15,7 @@ export default {
             return new Response('IP not available', { status: 404 })
           }
         default:
-          return new Response('Invalid path', { status: 400 })
+          return new Response(`Invalid path: ${path}`, { status: 400 })
       }
 
     } else {
