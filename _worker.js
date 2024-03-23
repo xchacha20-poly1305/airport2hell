@@ -31,15 +31,19 @@ export default {
     let bytes = parseInt(bytesStr, 10);
     switch (unit) {
       case "":
-        if (200 <= bytesStr <= 599) {
+        if (200 <= bytesStr && bytesStr <= 599) {
           return new Response(null, { statue: bytesStr });
         }
+        break;
       case "k":
         bytes *= 1000;
+        break;
       case "m":
         bytes *= 1000000;
+        break;
       case "g":
         bytes *= 1000000000;
+        break;
     }
 
 
