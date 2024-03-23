@@ -18,4 +18,6 @@ Airport2hell 是一款将贵机场的虚假宣传送入地狱的工具。
 
 * `/ip` 获取访问的 IP 地址。
 
-* `/<number>` "number" 为数字，当 `number` <=128 时将下载 \<number\> MB 的文件（Cloudflare 有文件大小限制？）；其他时候将返回对应的 HTTP 状态码。
+* `/<number>` "number" 为数字，当 200 <= `number` <= 599 时返回对应的 HTTP 状态码。其他时候下载 \<number\> bytes 的文件。
+
+* `/<number><unit>` "number" 为数字，"unit" 为 "k"、 "m" 或 "g"。将下载对应大小的文件。

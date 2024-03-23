@@ -1,42 +1,51 @@
 export default {
   async fetch(request, env, ctx) {
-    const url = new URL(request.url)
-    const path = url.pathname
+    const url = new URL(request.url);
+    const path = url.pathname;
 
-    if (isNaN(parseInt(path.substring(1)))) {
-      switch (path) {
-        case "/":
-          return Response.redirect('https://github.com/xchacha20-poly1305/airport2hell', 302)
-        case "/ip":
-          const ip = request.headers.get('cf-connecting-ip')
-          if (ip) {
-            return new Response(ip, { status: 200 })
-          } else {
-            return new Response('IP not available', { status: 404 })
-          }
-        default:
-          return new Response(`Invalid path: ${path}`, { status: 400 })
-      }
-
-    } else {
-      const value = parseInt(path.substring(1))
-      if (value <= 128) {
-        // Generate data for the file
-        const data = new Uint8Array(value * 1024 * 1024) // Convert MB to bytes
-
-        // Create a Blob from the data
-        const blob = new Blob([data])
-
-        // Create a Response with the Blob
-        return new Response(blob, {
-          headers: {
-            'Content-Disposition': `attachment; filename=random_${value}mb.dat`,
-            'Content-Type': 'application/octet-stream',
-          },
-        })
-      } else {
-        return new Response(null, { status: value })
-      }
+    switch (path) {
+      case "/":
+        return Response.redirect('https://github.com/xchacha20-poly1305/airport2hell', 302);
+      case "/ip":
+        const ip = request.headers.get('cf-connecting-ip');
+        if (ip) {
+          return new Response(ip, { status: 200 });
+        } else {
+          return new Response('IP not available', { status: 404 });
+        }
     }
+
+    // https://github.com/cmliu/CF-Workers-SpeedTestURL/blob/40c2c83cc3a226e23e03426d848ee6a90ae7178b/_worker.js
+
+    // 以数字开头，以字母结尾
+    const regex = /^(\d+)([a-z]?)$/i;
+    const match = path.substring(1).match(regex);
+    if (!match) {
+      return new Response("invaild path", { status: 400 });
+    }
+
+    const bytesStr = match[1];
+    const unit = match[2].toLowerCase();
+
+    // 转换单位
+    let bytes = parseInt(bytesStr, 10);
+    switch (unit) {
+      case "":
+        if (200 <= bytesStr <= 599) {
+          return new Response(null, { statue: bytesStr });
+        }
+      case "k":
+        bytes *= 1000;
+      case "m":
+        bytes *= 1000000;
+      case "g":
+        bytes *= 1000000000;
+    }
+
+
+    const targetUrl = `http://speed.cloudflare.com/__down?bytes=${bytes}`;
+    const cfRequest = new Request(targetUrl, request);
+
+    return await fetch(cfRequest);
   }
 }
