@@ -6,10 +6,6 @@ Airport2hell 是一款将贵机场的虚假宣传送入地狱的工具。
 
 # 部署
 
-## Workers
-
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/xchacha20-poly1305/airport2hell)
-
 ## Pages
 
 点击 “Use this template” 后连接到 Cloudflare。
