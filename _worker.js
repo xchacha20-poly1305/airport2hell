@@ -1,3 +1,7 @@
+// per chunk size should not reach worker's memory limit
+// https://developers.cloudflare.com/workers/platform/limits
+const MAX_CHUNK_SIZE = 1024 * 1024 * 10; // 10MB
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -47,9 +51,35 @@ export default {
     }
 
 
-    const targetUrl = `http://speed.cloudflare.com/__down?bytes=${bytes}`;
-    const cfRequest = new Request(targetUrl, request);
+    // https://github.com/alsotang/cf_workers__file/blob/f2a81dcda59b191ea8e510eef11af30d99c15f6e/src/handler.ts
 
-    return await fetch(cfRequest);
+    let sendedSize = 0;
+
+    let { readable, writable } = new TransformStream()
+
+    // return the readable first, then write to it
+    setTimeout(async () => {
+      const MAX_CHUNK = new Uint8Array(MAX_CHUNK_SIZE)
+      const writer = writable.getWriter()
+
+      // use stream to keep memory usage small enough
+      while (sendedSize < bytes) {
+        const chunkSize = Math.min(bytes - sendedSize, MAX_CHUNK_SIZE);
+        if (chunkSize === MAX_CHUNK_SIZE) {
+          await writer.write(MAX_CHUNK)
+        } else {
+          await writer.write(new Uint8Array(chunkSize))
+        }
+        sendedSize += chunkSize;
+      }
+
+      writer.close()
+    }, 0);
+
+    return new Response(readable, {
+      headers: {
+        'Content-Disposition': 'attachment; filename="file.bin"'
+      }
+    })
   }
 }
