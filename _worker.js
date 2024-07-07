@@ -78,7 +78,8 @@ export default {
 
     return new Response(readable, {
       headers: {
-        'Content-Disposition': 'attachment; filename="file.bin"'
+        'Content-Length': bytes,
+        'Content-Disposition': 'attachment; filename="file.bin"',
       }
     })
   }
