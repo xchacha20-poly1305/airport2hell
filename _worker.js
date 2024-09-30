@@ -11,8 +11,8 @@ export default {
       case "/":
         return Response.redirect('https://github.com/xchacha20-poly1305/airport2hell', 302);
       case "/ip":
-        const ip = request.headers.get('cf-connecting-ip');
         if (ip) {
+          const ip = request.headers.get('cf-connecting-ip');
           return new Response(ip, { status: 200 });
         } else {
           return new Response('IP not available', { status: 404 });
