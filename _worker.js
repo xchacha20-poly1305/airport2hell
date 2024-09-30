@@ -36,7 +36,7 @@ export default {
     switch (unit) {
       case "":
         if (200 <= bytesStr && bytesStr <= 599) {
-          return new Response(null, { statue: bytesStr });
+          return new Response(null, { status: bytesStr });
         }
         break;
       case "k":
