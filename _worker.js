@@ -36,7 +36,7 @@ export default {
     let bytes = parseInt(bytesStr, 10);
     switch (unit) {
       case "":
-        if (200 <= bytesStr && bytesStr <= 599) {
+        if (200 <= bytes && bytes <= 599) {
           return new Response(null, { status: bytesStr });
         }
         break;
