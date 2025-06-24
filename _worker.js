@@ -10,13 +10,14 @@ export default {
     switch (path) {
       case "/":
         return Response.redirect('https://github.com/xchacha20-poly1305/airport2hell', 302);
-      case "/ip":
+      case "/ip": {
+        const ip = request.headers.get('cf-connecting-ip');
         if (ip) {
-          const ip = request.headers.get('cf-connecting-ip');
           return new Response(ip, { status: 200 });
         } else {
           return new Response('IP not available', { status: 404 });
         }
+      }
     }
 
     // https://github.com/cmliu/CF-Workers-SpeedTestURL/blob/40c2c83cc3a226e23e03426d848ee6a90ae7178b/_worker.js
