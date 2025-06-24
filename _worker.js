@@ -25,7 +25,7 @@ export default {
     const regex = /^(\d+)([a-z]?)$/i;
     const match = path.substring(1).match(regex);
     if (!match) {
-      return new Response("invaild path", { status: 400 });
+      return new Response("invalid path", { status: 400 });
     }
 
     const bytesStr = match[1];
