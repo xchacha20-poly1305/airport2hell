@@ -15,7 +15,7 @@ export default {
         if (ip) {
           return new Response(ip, { status: 200 });
         } else {
-          return new Response('IP not available', { status: 404 });
+          return new Response('IP not available', { status: 502 });
         }
       }
     }
