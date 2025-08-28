@@ -7,6 +7,9 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    // Ignore all upload data
+    await drainBody(request);
+
     switch (path) {
       case "/":
         return Response.redirect('https://github.com/xchacha20-poly1305/airport2hell', 302);
@@ -83,5 +86,18 @@ export default {
         'Content-Disposition': 'attachment; filename="file.bin"',
       }
     })
+  }
+}
+
+async function drainBody(request) {
+  if (request.body) {
+    const reader = request.body.getReader();
+    try {
+      while (true) {
+        const { done } = await reader.read();
+        if (done) break;
+      }
+    } catch (e) {
+    }
   }
 }
