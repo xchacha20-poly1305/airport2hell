@@ -59,30 +59,29 @@ export default {
 
     let sendedSize = 0;
 
-    let { readable, writable } = new TransformStream()
+    const { readable, writable } = new FixedLengthStream(bytes);
 
     // return the readable first, then write to it
     setTimeout(async () => {
-      const MAX_CHUNK = new Uint8Array(MAX_CHUNK_SIZE)
-      const writer = writable.getWriter()
+      const MAX_CHUNK = new Uint8Array(MAX_CHUNK_SIZE);
+      const writer = writable.getWriter();
 
       // use stream to keep memory usage small enough
       while (sendedSize < bytes) {
         const chunkSize = Math.min(bytes - sendedSize, MAX_CHUNK_SIZE);
         if (chunkSize === MAX_CHUNK_SIZE) {
-          await writer.write(MAX_CHUNK)
+          await writer.write(MAX_CHUNK);
         } else {
           await writer.write(new Uint8Array(chunkSize))
         }
         sendedSize += chunkSize;
       }
 
-      writer.close()
+      writer.close();
     }, 0);
 
     return new Response(readable, {
       headers: {
-        'Content-Length': bytes,
         'Content-Disposition': 'attachment; filename="file.bin"',
       }
     })
