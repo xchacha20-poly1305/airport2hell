@@ -16,6 +16,8 @@ Airport2hell 是一款将贵机场的虚假宣传送入地狱的工具。
 
 * `/ip` 获取访问的 IP 地址。
 
+* `/ua` 或 `/user-agent` 获取访问的 User-Agent 信息（路径不区分大小写，无 UA 时返回 400）。
+
 * `/<number>` "number" 为数字，当 200 <= `number` <= 599 时返回对应的 HTTP 状态码。其他时候下载 \<number\> bytes 的文件。
 
 * `/<number><unit>` "number" 为数字，"unit" 为 "k"、 "m" 或 "g"。将下载对应大小的文件。

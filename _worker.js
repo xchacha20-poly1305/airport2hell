@@ -6,11 +6,12 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
+    const normalizedPath = path.toLowerCase();
 
     // Ignore all upload data
     await drainBody(request);
 
-    switch (path) {
+    switch (normalizedPath) {
       case "/":
         return Response.redirect('https://github.com/xchacha20-poly1305/airport2hell', 302);
       case "/ip": {
@@ -19,6 +20,15 @@ export default {
           return new Response(ip, { status: 200 });
         } else {
           return new Response('IP not available', { status: 502 });
+        }
+      }
+      case "/ua":
+      case "/user-agent": {
+        const ua = request.headers.get('user-agent');
+        if (ua) {
+          return new Response(ua, { status: 200 });
+        } else {
+          return new Response('User-Agent not available', { status: 400 });
         }
       }
     }
