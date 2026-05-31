@@ -6,9 +6,47 @@ Airport2hell 是一款将贵机场的虚假宣传送入地狱的工具。
 
 # 部署
 
+## Workers
+
+### 方法一：Wrangler 部署（推荐）
+
+```shell
+# 安装 wrangler
+npm install wrangler -g
+
+# 部署为 Worker
+npx wrangler deploy _worker.js --name airport2hell
+```
+
+### 方法二：网页部署
+
+1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)，在 “Workers & Pages” 中点击 “Create Worker”。
+2. 创建 Worker 后，点击 “Edit Code”。
+3. 将项目中的 `_worker.js` 内容复制并替换到编辑器中，保存并部署。
+
 ## Pages
 
-点击 “Use this template” 后连接到 Cloudflare。
+### 方法一：Git 连接部署
+
+1. 在 GitHub 上点击 **“Use this template”** 按钮，基于此模版创建一个你自己的 GitHub 仓库。
+2. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)。
+3. 导航到 **Workers & Pages** -> **Create**，选择 **Pages** 标签页，然后点击 **Connect to Git**。
+4. 选择并授权你的 GitHub 账号，选择你刚刚创建的仓库，点击 **Begin setup**。
+5. 在 **Build settings**（构建设置）中配置如下：
+   - **Framework preset**（框架预设）: 选择 `None`。
+   - **Build command**（构建命令）: 留空（不填）。
+   - **Build output directory**（构建输出目录）: 填写 `.`（即根目录）。
+6. 点击 **Save and Deploy**，等待 Cloudflare 部署完成即可。
+
+### 方法二：Wrangler 部署
+
+```shell
+# 安装 wrangler
+npm install wrangler -g
+
+# 部署为 Pages
+npx wrangler pages deploy .
+```
 
 # 用法
 
@@ -24,8 +62,16 @@ Airport2hell 是一款将贵机场的虚假宣传送入地狱的工具。
 
 # 开发
 
+## Workers 开发
+
 ```shell
 npm install wrangler -g
+npx wrangler dev _worker.js
+```
 
+## Pages 开发
+
+```shell
+npm install wrangler -g
 npx wrangler pages dev .
 ```
