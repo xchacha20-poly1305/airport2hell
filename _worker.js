@@ -33,6 +33,43 @@ export default {
       }
     }
 
+    if (normalizedPath.startsWith('/delay/')) {
+      const statusStr = normalizedPath.substring('/delay/'.length);
+      const statusMatch = statusStr.match(/^(\d+)$/);
+      if (!statusMatch) {
+        return new Response("invalid path", { status: 400 });
+      }
+      const statusCode = parseInt(statusMatch[1], 10);
+      if (statusCode < 200 || statusCode > 599) {
+        return new Response("invalid status code", { status: 400 });
+      }
+
+      let delayMs = 0;
+      const delayParam = url.searchParams.get('delay');
+      if (delayParam) {
+        const rangeMatch = delayParam.match(/^(\d+)(?:-(\d+))?$/);
+        if (rangeMatch) {
+          const min = parseInt(rangeMatch[1], 10);
+          if (rangeMatch[2]) {
+            const max = parseInt(rangeMatch[2], 10);
+            if (max >= min) {
+              delayMs = Math.floor(Math.random() * (max - min + 1)) + min;
+            } else {
+              delayMs = Math.floor(Math.random() * (min - max + 1)) + max;
+            }
+          } else {
+            delayMs = min;
+          }
+        }
+      }
+
+      if (delayMs > 0) {
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+
+      return new Response(null, { status: statusCode });
+    }
+
     // https://github.com/cmliu/CF-Workers-SpeedTestURL/blob/40c2c83cc3a226e23e03426d848ee6a90ae7178b/_worker.js
 
     // 以数字开头，以字母结尾
