@@ -71,7 +71,7 @@ export default {
     let bytes = parseInt(bytesStr, 10);
     switch (unit) {
       case "":
-        if (200 <= bytes && bytes <= 599) {
+        if (isValidStatusCode(bytes)) {
           return new Response(null, { status: bytesStr });
         }
         break;
