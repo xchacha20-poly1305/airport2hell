@@ -33,6 +33,28 @@ export default {
       }
     }
 
+    if (normalizedPath.startsWith('/delay/')) {
+      const statusStr = normalizedPath.substring('/delay/'.length);
+      const statusCode = parseInt(statusStr, 10);
+
+      if (!isValidStatusCode(statusStr, statusCode)) {
+        return new Response("invalid status code", { status: 400 });
+      }
+
+      const delayParam = url.searchParams.get('delay');
+      const { delayMs, error } = parseDelay(delayParam);
+
+      if (error) {
+        return new Response(error, { status: 400 });
+      }
+
+      if (delayMs > 0) {
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+
+      return new Response(null, { status: statusCode });
+    }
+
     // https://github.com/cmliu/CF-Workers-SpeedTestURL/blob/40c2c83cc3a226e23e03426d848ee6a90ae7178b/_worker.js
 
     // 以数字开头，以字母结尾
@@ -49,7 +71,7 @@ export default {
     let bytes = parseInt(bytesStr, 10);
     switch (unit) {
       case "":
-        if (200 <= bytes && bytes <= 599) {
+        if (isValidStatusCode(bytes)) {
           return new Response(null, { status: bytesStr });
         }
         break;
@@ -109,4 +131,38 @@ async function drainBody(request) {
     } catch (e) {
     }
   }
+}
+
+function isValidStatusCode(statusStr, statusCode) {
+  return !isNaN(statusCode) && statusStr === statusCode.toString() && statusCode >= 200 && statusCode <= 599;
+}
+
+function parseDelay(delayParam) {
+  if (!delayParam) return { delayMs: 0, error: null };
+
+  let delayMs = 0;
+  const parts = delayParam.split('-');
+
+  if (parts.length === 1) {
+    const val = parseInt(parts[0], 10);
+    if (!isNaN(val)) delayMs = val;
+  } else if (parts.length === 2) {
+    const min = parseInt(parts[0], 10);
+    const max = parseInt(parts[1], 10);
+    if (!isNaN(min) && !isNaN(max)) {
+      const actualMin = Math.min(min, max);
+      const actualMax = Math.max(min, max);
+
+      if (actualMax > 30000) {
+        return { delayMs: 0, error: "delay too large" };
+      }
+      delayMs = Math.floor(Math.random() * (actualMax - actualMin + 1)) + actualMin;
+    }
+  }
+
+  if (delayMs > 30000) {
+    return { delayMs: 0, error: "delay too large" };
+  }
+
+  return { delayMs, error: null };
 }
