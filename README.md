@@ -60,6 +60,8 @@ npx wrangler pages deploy .
 
 * `/<number><unit>` "number" 为数字，"unit" 为 "k"、 "m" 或 "g"。将下载对应大小的文件。
 
+* `/delay/<status_code>?delay=<delay_range>` `<status_code>` 为期望返回的状态码。delay 表示延迟几秒， 支持直接写整数或区间。示例：`/delay/204?delay=10`, `/delay/200?delay=20-50`.
+
 # 开发
 
 ## Workers 开发
