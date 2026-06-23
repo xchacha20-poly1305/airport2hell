@@ -55,9 +55,19 @@ export default {
           if (!isNaN(min) && !isNaN(max)) {
             const actualMin = Math.min(min, max);
             const actualMax = Math.max(min, max);
+
+            // Validate the maximum requested delay in range mode before calculation
+            if (actualMax > 10000) {
+              return new Response("delay too large", { status: 400 });
+            }
             delayMs = Math.floor(Math.random() * (actualMax - actualMin + 1)) + actualMin;
           }
         }
+      }
+
+      // Check max limit for both single value and the generated value from range
+      if (delayMs > 10000) {
+         return new Response("delay too large", { status: 400 });
       }
 
       if (delayMs > 0) {
