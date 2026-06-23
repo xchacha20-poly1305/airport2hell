@@ -35,30 +35,27 @@ export default {
 
     if (normalizedPath.startsWith('/delay/')) {
       const statusStr = normalizedPath.substring('/delay/'.length);
-      const statusMatch = statusStr.match(/^(\d+)$/);
-      if (!statusMatch) {
-        return new Response("invalid path", { status: 400 });
-      }
-      const statusCode = parseInt(statusMatch[1], 10);
-      if (statusCode < 200 || statusCode > 599) {
+      const statusCode = parseInt(statusStr, 10);
+
+      if (isNaN(statusCode) || statusStr !== statusCode.toString() || statusCode < 200 || statusCode > 599) {
         return new Response("invalid status code", { status: 400 });
       }
 
       let delayMs = 0;
       const delayParam = url.searchParams.get('delay');
+
       if (delayParam) {
-        const rangeMatch = delayParam.match(/^(\d+)(?:-(\d+))?$/);
-        if (rangeMatch) {
-          const min = parseInt(rangeMatch[1], 10);
-          if (rangeMatch[2]) {
-            const max = parseInt(rangeMatch[2], 10);
-            if (max >= min) {
-              delayMs = Math.floor(Math.random() * (max - min + 1)) + min;
-            } else {
-              delayMs = Math.floor(Math.random() * (min - max + 1)) + max;
-            }
-          } else {
-            delayMs = min;
+        const parts = delayParam.split('-');
+        if (parts.length === 1) {
+          const val = parseInt(parts[0], 10);
+          if (!isNaN(val)) delayMs = val;
+        } else if (parts.length === 2) {
+          const min = parseInt(parts[0], 10);
+          const max = parseInt(parts[1], 10);
+          if (!isNaN(min) && !isNaN(max)) {
+            const actualMin = Math.min(min, max);
+            const actualMax = Math.max(min, max);
+            delayMs = Math.floor(Math.random() * (actualMax - actualMin + 1)) + actualMin;
           }
         }
       }
