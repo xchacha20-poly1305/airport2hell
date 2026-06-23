@@ -37,37 +37,15 @@ export default {
       const statusStr = normalizedPath.substring('/delay/'.length);
       const statusCode = parseInt(statusStr, 10);
 
-      if (isNaN(statusCode) || statusStr !== statusCode.toString() || statusCode < 200 || statusCode > 599) {
+      if (!isValidStatusCode(statusStr, statusCode)) {
         return new Response("invalid status code", { status: 400 });
       }
 
-      let delayMs = 0;
       const delayParam = url.searchParams.get('delay');
+      const { delayMs, error } = parseDelay(delayParam);
 
-      if (delayParam) {
-        const parts = delayParam.split('-');
-        if (parts.length === 1) {
-          const val = parseInt(parts[0], 10);
-          if (!isNaN(val)) delayMs = val;
-        } else if (parts.length === 2) {
-          const min = parseInt(parts[0], 10);
-          const max = parseInt(parts[1], 10);
-          if (!isNaN(min) && !isNaN(max)) {
-            const actualMin = Math.min(min, max);
-            const actualMax = Math.max(min, max);
-
-            // Validate the maximum requested delay in range mode before calculation
-            if (actualMax > 10000) {
-              return new Response("delay too large", { status: 400 });
-            }
-            delayMs = Math.floor(Math.random() * (actualMax - actualMin + 1)) + actualMin;
-          }
-        }
-      }
-
-      // Check max limit for both single value and the generated value from range
-      if (delayMs > 10000) {
-         return new Response("delay too large", { status: 400 });
+      if (error) {
+        return new Response(error, { status: 400 });
       }
 
       if (delayMs > 0) {
@@ -153,4 +131,38 @@ async function drainBody(request) {
     } catch (e) {
     }
   }
+}
+
+function isValidStatusCode(statusStr, statusCode) {
+  return !isNaN(statusCode) && statusStr === statusCode.toString() && statusCode >= 200 && statusCode <= 599;
+}
+
+function parseDelay(delayParam) {
+  if (!delayParam) return { delayMs: 0, error: null };
+
+  let delayMs = 0;
+  const parts = delayParam.split('-');
+
+  if (parts.length === 1) {
+    const val = parseInt(parts[0], 10);
+    if (!isNaN(val)) delayMs = val;
+  } else if (parts.length === 2) {
+    const min = parseInt(parts[0], 10);
+    const max = parseInt(parts[1], 10);
+    if (!isNaN(min) && !isNaN(max)) {
+      const actualMin = Math.min(min, max);
+      const actualMax = Math.max(min, max);
+
+      if (actualMax > 30000) {
+        return { delayMs: 0, error: "delay too large" };
+      }
+      delayMs = Math.floor(Math.random() * (actualMax - actualMin + 1)) + actualMin;
+    }
+  }
+
+  if (delayMs > 30000) {
+    return { delayMs: 0, error: "delay too large" };
+  }
+
+  return { delayMs, error: null };
 }
