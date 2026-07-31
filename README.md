@@ -6,25 +6,33 @@ Airport2hell 是一款将贵机场的虚假宣传送入地狱的工具。
 
 # 部署
 
-## Workers
+Airport2hell 可以部署为 Cloudflare **Workers** 或 **Pages**，任选其一即可。
 
-### 方法一：Wrangler 部署（推荐）
+## 一键部署
+
+点击下方按钮，登录 Cloudflare 账号后即可一键部署为 Worker：
+
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/xchacha20-poly1305/airport2hell)
+
+## Workers 部署
+
+### 方法一：Wrangler CLI（推荐）
 
 ```shell
 # 安装 wrangler
 npm install wrangler -g
 
 # 部署为 Worker
-npx wrangler deploy _worker.js --name airport2hell
+npx wrangler deploy
 ```
 
-### 方法二：网页部署
+### 方法二：Dashboard 网页部署
 
 1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)，在 “Workers & Pages” 中点击 “Create Worker”。
 2. 创建 Worker 后，点击 “Edit Code”。
 3. 将项目中的 `_worker.js` 内容复制并替换到编辑器中，保存并部署。
 
-## Pages
+## Pages 部署
 
 ### 方法一：Git 连接部署
 
@@ -38,7 +46,7 @@ npx wrangler deploy _worker.js --name airport2hell
    - **Build output directory**（构建输出目录）: 填写 `.`（即根目录）。
 6. 点击 **Save and Deploy**，等待 Cloudflare 部署完成即可。
 
-### 方法二：Wrangler 部署
+### 方法二：Wrangler CLI
 
 ```shell
 # 安装 wrangler
@@ -68,7 +76,7 @@ npx wrangler pages deploy .
 
 ```shell
 npm install wrangler -g
-npx wrangler dev _worker.js
+npx wrangler dev
 ```
 
 ## Pages 开发
